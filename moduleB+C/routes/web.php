@@ -8,6 +8,7 @@ use App\Http\Controllers\ChannelsController;
 use App\Http\Controllers\RoomsController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\TicketsController;
+use App\Http\Controllers\ReportController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -35,19 +36,34 @@ Route::get('/events', [EventController::class, 'index'])
     ->middleware('checkLogin')
     ->name('event');
 
+
 Route::get('/events/create', [EventController::class, 'create'])
     ->middleware('checkLogin')
     ->name('events.create');
+
+Route::post('/events', [EventController::class, 'store'])
+    ->middleware('checkLogin')
+    ->name('events.store');
+
 
 Route::get('/events/{id}', [EventController::class, 'show'])
     ->middleware('checkLogin')
     ->name('events.show');
 
-Route::get('/tickets/create', [TicketsController::class, 'create'])
+Route::get('/events/{id}/edit', [EventController::class, 'edit'])
+    ->middleware('checkLogin')
+    ->name('events.edit');
+
+Route::put('/events/{id}', [EventController::class, 'update'])
+    ->middleware('checkLogin')
+    ->name('events.update');
+
+    
+Route::get('/tickets/create/{id}', [TicketsController::class, 'create'])
     ->middleware('checkLogin')
     ->name('tickets.create');
 
-Route::get('/channels/create', [ChannelsController::class, 'create'])
+Route::get('/channels/create/{id}', [ChannelsController::class, 'create'])
     ->middleware('checkLogin')
     ->name('channels.create');
 
@@ -63,7 +79,7 @@ Route::get('/sessions/edit', [SessionsController::class, 'edit'])
     ->middleware('checkLogin')
     ->name('sessions.edit');
 
-Route::get('/reports', [RoomsController::class,'index'])
+Route::get('/reports', [ReportController::class,'index'])
     ->middleware('checkLogin')
     ->name('reports');
 

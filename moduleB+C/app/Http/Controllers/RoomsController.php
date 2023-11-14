@@ -10,7 +10,5 @@ class RoomsController extends Controller
         return view("rooms.create");
     }
     
-    public function index(){
-        return view('reports.index');
-    }
+    
 }

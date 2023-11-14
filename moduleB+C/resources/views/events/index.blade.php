@@ -18,7 +18,7 @@
 
 <body>
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="events/index.html">Nền tảng sự kiện</a>
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{route('event')}}">Nền tảng sự kiện</a>
         <span class="navbar-organizer w-100">{{ session()->get('user')->name }}</span>
         <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
@@ -32,7 +32,7 @@
             <nav class="col-md-2 d-none d-md-block bg-light sidebar">
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column">
-                        <li class="nav-item"><a class="nav-link active" href="{{route('event')}}">Quản lý sự kiện</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="{{route('events.create')}}">Quản lý sự kiện</a></li>
                     </ul>
                 </div>
             </nav>

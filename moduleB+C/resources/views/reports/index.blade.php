@@ -20,10 +20,10 @@
 <body>
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="events/index.html">Nền tảng sự kiện</a>
-        <span class="navbar-organizer w-100">{tên tổ chức}</span>
+        <span class="navbar-organizer w-100">{{ session()->get('user')->name }}</span>
         <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
-                <a class="nav-link" id="logout" href="index.html">Đăng xuất</a>
+                <a class="nav-link" id="logout" href="{{ route('logout') }}">Đăng xuất</a>
             </li>
         </ul>
     </nav>
@@ -65,39 +65,45 @@
                 <div class="mb-3 pt-3 pb-2">
                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
                         <h2 class="h4">Công suất phòng</h2>
-
+                        
                     </div>
                 </div>
-
+                @foreach($capacity as $session)
+                    <p>{{$session->capacity}}</p>
+                @endforeach
                 <!-- TODO create chart here -->
-                
-                <div>
-                    <canvas id="myChart"></canvas>
-                </div>
                 <script src="/chart/dist/Chart.min.js"></script>
-                <script>
-                    const ctx = document.getElementById('myChart');
-                    var xValues = [ "A", "B", "C", "D"];
-                    var yValues = [100, 100, 100, 100]
-                    var barColors = ["red", "green","blue","orange"];
-                    new Chart(ctx, {
-                      type: "bar",
-                      data: {
-                        labels: xValues,
-                        datasets: [{
-                          backgroundColor: barColors,
-                          data: yValues
-                        }]
-                      },
-                      options: {
-                        legend: {display: false},
-                        title: {
-                          display: true,
-                        
-                        }
-                      }
-                    });
-                </script>
+                <canvas id="myChart"></canvas>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['a','a' ,'a' ,'a' ,'a'],
+        datasets: [{
+            label: 'Người tham dự',
+            data: [0,9,2,3],
+            backgroundColor: 'green',
+            borderWidth: 1
+        },
+        {
+            label: 'Công suất',
+            data: [
+                0,9,2,3
+            ],
+            backgroundColor: 'blue',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+    </script>
             </main>
         </div>
     </div>

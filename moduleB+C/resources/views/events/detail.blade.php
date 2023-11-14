@@ -16,22 +16,22 @@
 </head>
 
 <body>
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="events/index.html">Nền tảng sự kiện</a>
-    <span class="navbar-organizer w-100">{tên tổ chức}</span>
-    <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-            <a class="nav-link" id="logout" href="index.html">Đăng xuất</a>
-        </li>
-    </ul>
-</nav>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{route('event')}}">Nền tảng sự kiện</a>
+        <span class="navbar-organizer w-100">{{ session()->get('user')->name }}</span>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" id="logout" href="{{ route('logout') }}">Đăng xuất</a>
+            </li>
+        </ul>
+    </nav>
 
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="events/index.html">Quản lý sự kiện</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('event')}}">Quản lý sự kiện</a></li>
                 </ul>
 
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -56,7 +56,7 @@
                     <h1 class="h2">{{$events->name}}</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
-                            <a href="events/edit.html" class="btn btn-sm btn-outline-secondary">Sửa sự kiện</a>
+                            <a href="{{route('events.edit',['id'=> session()->get('user')->id])}}" class="btn btn-sm btn-outline-secondary">Sửa sự kiện</a>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                     <h2 class="h4">Vé</h2>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
-                            <a href="{{route("tickets.create")}}" class="btn btn-sm btn-outline-secondary">
+                            <a href="{{route('tickets.create',['id'=> session()->get('user')->id])}}" class="btn btn-sm btn-outline-secondary">
                                 Tạo vé mới
                             </a>
                         </div>
@@ -89,8 +89,12 @@
                         <div class="card-body">
                             <h5 class="card-title">{{$ticket->name}}</h5>
                             <p class="card-text">{{$ticket->cost}}</p>
-                            <p class="card-text">Sẵn có đến ngày </p>
-                           
+                            @if($data !== null && $data->type == 'date')
+                            <p class="card-text">Sẵn có đến ngày {{date('d-m-Y', strtotime($data->date))}} </p>
+                            @endif
+                            @if($data !== null && $data->type == 'amount')
+                            <p class="card-text">{{$data->amount}} vé sẵn có</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -130,7 +134,7 @@
                         <td>{{$session->type}}</td>
                         <td><a href="{{route('sessions.edit')}}">{{$session->title}}</a></td>
                         <td class="text-nowrap">{{$session->speaker}}</td>
-                        <td class="text-nowrap">Chính / Phòng A</td>
+                        <td class="text-nowrap">{{$channels->find($rooms->find($session->room_id)->channel_id)->name}} / {{$rooms->find($session->room_id)->name}}</td>
                     </tr>
                     @endforeach
                     </tbody>
@@ -143,7 +147,7 @@
                     <h2 class="h4">Kênh</h2>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
-                            <a href="{{route('channels.create')}}" class="btn btn-sm btn-outline-secondary">
+                            <a href="{{route('channels.create', ["id" => 1])}}" class="btn btn-sm btn-outline-secondary">
                                 Tạo kênh mới
                             </a>
                         </div>

@@ -16,24 +16,26 @@
 </head>
 
 <body>
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="events/index.html">Nền tảng sự kiện</a>
-    <span class="navbar-organizer w-100">{tên tổ chức}</span>
-    <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-            <a class="nav-link" id="logout" href="index.html">Đăng xuất</a>
-        </li>
-    </ul>
-</nav>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="events/index.html">Nền tảng sự kiện</a>
+        <span class="navbar-organizer w-100">{{ session()->get('user')->name }}</span>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" id="logout" href="{{ route('logout') }}">Đăng xuất</a>
+            </li>
+        </ul>
+    </nav>
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link active" href="events/index.html">Quản lý sự kiện</a></li>
-                </ul>
-            </div>
+        <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+            <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{route('event')}}">Nền tảng sự kiện</a>
+            <span class="navbar-organizer w-100">{{ session()->get('user')->name }}</span>
+            <ul class="navbar-nav px-3">
+                <li class="nav-item text-nowrap">
+                    <a class="nav-link" id="logout" href="{{ route('logout') }}">Đăng xuất</a>
+                </li>
+            </ul>
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
@@ -48,35 +50,71 @@
                 </div>
             </div>
 
-            <form class="needs-validation" novalidate action="events/detail.html">
+           
 
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+            <form method="POST" class="needs-validation" novalidate action="{{route("events.store")}}">
+                @csrf
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputName">Tên</label>
-                        <!-- adding the class is-invalid to the input, shows the invalid feedback below -->
-                        <input type="text" class="form-control is-invalid" id="inputName" name="name" placeholder="" value="">
+                        @if(!$errors->has('name'))
+                        <input type="text"  class="form-control " id="inputName" name="name" placeholder="" value="">
+                        @else
+                        <input type="text"  class="form-control is-invalid" id="inputName" name="name" placeholder="" value="">
                         <div class="invalid-feedback">
                             Tên không được để trống.
                         </div>
+                        @endif
+                        
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputSlug">Slug</label>
+                        @if(!$errors->has('slug'))
                         <input type="text" class="form-control" id="inputSlug" name="slug" placeholder="" value="">
+                        @else
+                        <input type="text" class="form-control is-invalid" id="inputSlug" name="slug" placeholder="" value="">
+                        <div class="invalid-feedback ">
+                            Slug không được để trống.
+                        </div>
+                        @endif
+                        
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputDate">Ngày</label>
-                        <input type="text"
+                        @if(!$errors->has('date'))
+                        <input type="date"
                                class="form-control"
                                id="inputDate"
                                name="date"
                                placeholder="yyyy-mm-dd"
                                value="">
+                        @else
+                        <input type="date"
+                               class="form-control is-invalid"
+                               id="inputDate"
+                               name="date"
+                               placeholder="yyyy-mm-dd"
+                               value="">
+                        <div class="invalid-feedback">
+                            Date không được để trống.
+                        </div>
+                        @endif
                     </div>
                 </div>
 

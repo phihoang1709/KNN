@@ -6,7 +6,12 @@ use Illuminate\Http\Request;
 
 class SessionsController extends Controller
 {
-    public function create(){
+    public function create(Request $request){
+        $this->validate($request, [
+            "title"=> "string",
+            "description" => "string",
+            "speaker" => "string",
+        ]);
         return view("sessions.create");
     }
     public function edit(){

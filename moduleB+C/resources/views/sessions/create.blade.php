@@ -16,15 +16,15 @@
 </head>
 
 <body>
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="events/index.html">Nền tảng sự kiện</a>
-    <span class="navbar-organizer w-100">{tên tổ chức}</span>
-    <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-            <a class="nav-link" id="logout" href="index.html">Đăng xuất</a>
-        </li>
-    </ul>
-</nav>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{route('event')}}">Nền tảng sự kiện</a>
+        <span class="navbar-organizer w-100">{{ session()->get('user')->name }}</span>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" id="logout" href="{{ route('logout') }}">Đăng xuất</a>
+            </li>
+        </ul>
+    </nav>
 
 <div class="container-fluid">
     <div class="row">
@@ -64,8 +64,8 @@
                 </div>
             </div>
 
-            <form class="needs-validation" novalidate action="events/detail.html">
-
+            <form method="POST" class="needs-validation" novalidate action="events/detail.html">
+                @csrf
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="selectType">Loại</label>
@@ -80,17 +80,28 @@
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputTitle">Tiêu đề</label>
                         <!-- adding the class is-invalid to the input, shows the invalid feedback below -->
+                        @if(!$errors->has('title'))
+                        <input type="text" class="form-control" id="inputTitle" name="title" placeholder="" value="">
+                        @else
                         <input type="text" class="form-control is-invalid" id="inputTitle" name="title" placeholder="" value="">
                         <div class="invalid-feedback">
                             Tiêu đề không được để trống.
                         </div>
+                        @endif
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputSpeaker">Người trình bày</label>
+                        @if(!$errors->has('speaker'))
                         <input type="text" class="form-control" id="inputSpeaker" name="speaker" placeholder="" value="">
+                        @else
+                        <input type="text" class="form-control" id="inputSpeaker" name="speaker" placeholder="" value="">
+                        <div class="invalid-feedback">
+                            Người trình bày không được để trống.
+                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -109,14 +120,21 @@
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputCost">Chi phí</label>
+                        @if(!$errors->has('cost'))
                         <input type="number" class="form-control" id="inputCost" name="cost" placeholder="" value="0">
+                        @else
+                        <input type="number" class="form-control" id="inputCost" name="cost" placeholder="" value="0">
+                        <div class="invalid-feedback">
+                            Chi phí không được để trống.
+                        </div>
+                        @endif
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-12 col-lg-6 mb-3">
                         <label for="inputStart">Bắt đầu</label>
-                        <input type="text"
+                        <input type=""
                                class="form-control"
                                id="inputStart"
                                name="start"
@@ -125,7 +143,7 @@
                     </div>
                     <div class="col-12 col-lg-6 mb-3">
                         <label for="inputEnd">Kết thúc</label>
-                        <input type="text"
+                        <input type="timestamp"
                                class="form-control"
                                id="inputEnd"
                                name="end"
