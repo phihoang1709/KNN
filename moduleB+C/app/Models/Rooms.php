@@ -9,6 +9,7 @@ use App\Models\Channels;
 class Rooms extends Model
 {
     use HasFactory;
+    public $timestamps= false;
     public function Channels(){
         return $this->belongsTo(Channels::class);
     }

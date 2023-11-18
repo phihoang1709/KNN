@@ -45,7 +45,7 @@
                     <span>Báo cáo</span>
                 </h6>
                 <ul class="nav flex-column mb-2">
-                    <li class="nav-item"><a class="nav-link" href="{{route('reports')}}">Công suất phòng</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('reports',['id'=>$events->id])}}">Công suất phòng</a></li>
                 </ul>
             </div>
         </nav>
@@ -64,8 +64,12 @@
             </div>
 
             <!-- Tickets -->
+            @if(Session::has('success'))
+                <div class="alert alert-success mt-4">{{ Session::get('success') }}</div>
+            @endif
             <div id="tickets" class="mb-3 pt-3 pb-2">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+                    
                     <h2 class="h4">Vé</h2>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
@@ -89,11 +93,12 @@
                         <div class="card-body">
                             <h5 class="card-title">{{$ticket->name}}</h5>
                             <p class="card-text">{{$ticket->cost}}</p>
-                            @if($data !== null && $data->type == 'date')
+                            @if(isset($data->date))
                             <p class="card-text">Sẵn có đến ngày {{date('d-m-Y', strtotime($data->date))}} </p>
-                            @endif
-                            @if($data !== null && $data->type == 'amount')
+                            @elseif(isset($data->amount))
                             <p class="card-text">{{$data->amount}} vé sẵn có</p>
+                            @else
+                            <p class="card-text"></p>
                             @endif
                         </div>
                     </div>
@@ -108,7 +113,7 @@
                     <h2 class="h4">Phiên</h2>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
-                            <a href="{{route('sessions.create')}}" class="btn btn-sm btn-outline-secondary">
+                            <a href="{{route('sessions.create',['id'=> session()->get('user')->id])}}" class="btn btn-sm btn-outline-secondary">
                                 Tạo phiên mới
                             </a>
                         </div>
@@ -132,7 +137,7 @@
                     <tr>
                         <td class="text-nowrap">{{ date('H:i:s', strtotime($session->start))}} - {{date('H:i:s', strtotime($session->end))}}</td>
                         <td>{{$session->type}}</td>
-                        <td><a href="{{route('sessions.edit')}}">{{$session->title}}</a></td>
+                        <td><a href="{{route('sessions.edit', ['id' => $events->id, 'session_id' => $session->id])}}">{{$session->title}}</a></td>
                         <td class="text-nowrap">{{$session->speaker}}</td>
                         <td class="text-nowrap">{{$channels->find($rooms->find($session->room_id)->channel_id)->name}} / {{$rooms->find($session->room_id)->name}}</td>
                     </tr>
@@ -161,7 +166,7 @@
                     <div class="card mb-4 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title">{{$channel->name}}</h5>
-                            <p class="card-text">3 Phiên, 1 phòng</p>
+                            <p class="card-text">{{$sessions->whereIn('room_id',$rooms->where('channel_id', $channel->id)->pluck('id'))->count()}} phiên, {{$rooms->where('channel_id', $channel->id)->count()}} phòng</p>
                         </div>
                     </div>
                 </div>
@@ -174,7 +179,7 @@
                     <h2 class="h4">Phòng</h2>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
-                            <a href="{{route('rooms.create')}}" class="btn btn-sm btn-outline-secondary">
+                            <a href="{{route('rooms.create', ['id' => $events->id])}}" class="btn btn-sm btn-outline-secondary">
                                 Tạo phòng mới
                             </a>
                         </div>

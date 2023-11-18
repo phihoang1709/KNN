@@ -9,7 +9,7 @@ use App\Models\Events;
 
 class Channels extends Model
 {
-    
+    public $timestamps = false;
     use HasFactory;
     public function Rooms(){
         return $this->hasMany(Rooms::class);

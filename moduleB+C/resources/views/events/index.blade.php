@@ -36,7 +36,9 @@
                     </ul>
                 </div>
             </nav>
-
+            @if(Session::has('success'))
+                <div class="alert alert-success mt-4">{{ Session::get('success') }}</div>
+            @endif
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">Quản lý sự kiện</h1>
@@ -56,7 +58,8 @@
                                     <h5 class="card-title">{{ $event->name }}</h5>
                                     <p class="card-subtitle">{{ $event->date }}</p>
                                     <hr>
-                                    <p class="card-text">3,546 người đăng ký</p>
+                                    <p class="card-text">{{$registrations->whereIn('ticket_id',$eventTicket->whereIn('event_id', $event->id)->pluck('id'))->count()}} người đăng ký</p>
+                                    
                                 </div>
                             </a>
                         </div>

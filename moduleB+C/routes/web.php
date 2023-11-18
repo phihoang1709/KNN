@@ -58,28 +58,48 @@ Route::put('/events/{id}', [EventController::class, 'update'])
     ->middleware('checkLogin')
     ->name('events.update');
 
-    
-Route::get('/tickets/create/{id}', [TicketsController::class, 'create'])
+
+Route::get('/tickets/{id}/create', [TicketsController::class, 'create'])
     ->middleware('checkLogin')
     ->name('tickets.create');
+
+Route::post('/tickets/{id}', [TicketsController::class, 'store'])
+    ->middleware('checkLogin')
+    ->name('tickets.store');
 
 Route::get('/channels/create/{id}', [ChannelsController::class, 'create'])
     ->middleware('checkLogin')
     ->name('channels.create');
 
-Route::get('/rooms/create', [RoomsController::class, 'create'])
+Route::post('/channels/{id}', [ChannelsController::class, 'store'])
+    ->middleware('checkLogin')
+    ->name('channels.store');
+
+Route::get('/rooms/create/{id}', [RoomsController::class, 'create'])
     ->middleware('checkLogin')
     ->name('rooms.create');
 
-Route::get('/sessions/create', [SessionsController::class, 'create'])
+Route::post('/rooms/{id}', [RoomsController::class, 'store'])
+    ->middleware('checkLogin')
+    ->name('rooms.store');
+
+Route::get('/sessions/{id}', [SessionsController::class, 'create'])
     ->middleware('checkLogin')
     ->name('sessions.create');
 
-Route::get('/sessions/edit', [SessionsController::class, 'edit'])
+Route::post('/sessions/{id}', [SessionsController::class, 'store'])
+    ->middleware('checkLogin')
+    ->name('sessions.store');
+
+Route::get('/sessions/{id}/edit/{session_id}', [SessionsController::class, 'edit'])
     ->middleware('checkLogin')
     ->name('sessions.edit');
 
-Route::get('/reports', [ReportController::class,'index'])
+Route::put('/sessions/{id}/edit/{session_id}', [SessionsController::class, 'update'])
+    ->middleware('checkLogin')
+    ->name('sessions.update');
+
+Route::get('/reports/{id}', [ReportController::class,'index'])
     ->middleware('checkLogin')
     ->name('reports');
 

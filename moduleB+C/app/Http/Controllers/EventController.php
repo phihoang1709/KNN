@@ -8,13 +8,18 @@ use App\Models\Channels;
 use App\Models\Rooms;
 use App\Models\Sessions;
 use App\Models\EventTickets;
-
+use App\Models\Registrations;
 class EventController extends Controller
 {
+    public function getSum(){
+
+    }
     public function index()
     {
-        $events = Events::where('organizer_id', 1)->get();
-        return view("events.index", compact("events"));
+        $events = Events::where('organizer_id', session()->get('user')->id)->get();
+        $eventTicket = EventTickets::whereIn('event_id', $events->pluck('id'))->get();
+        $registrations = Registrations::whereIn('ticket_id', $eventTicket->pluck('id'))->get();
+        return view("events.index", compact("events", "registrations", "eventTicket"));
     }
 
     public function create(){
@@ -69,6 +74,9 @@ class EventController extends Controller
         $channels = Channels::where("event_id", $events->id)->get();
         $rooms = Rooms::whereIn("channel_id", $channels->pluck("id"))->get();
         $sessions = Sessions::whereIn("room_id", $rooms->pluck("id"))->get();
+
+
+        $sumSessions = $sessions->count();
         return view("events.detail", compact(['events', 'channels', 'rooms', 'sessions', 'tickets']));
     }
 }

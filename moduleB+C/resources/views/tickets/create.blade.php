@@ -16,26 +16,26 @@
 </head>
 
 <body>
-<nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="events/index.html">Nền tảng sự kiện</a>
-    <span class="navbar-organizer w-100">{tên tổ chức}</span>
-    <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-            <a class="nav-link" id="logout" href="index.html">Đăng xuất</a>
-        </li>
-    </ul>
-</nav>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{route('event')}}">Nền tảng sự kiện</a>
+        <span class="navbar-organizer w-100">{{ session()->get('user')->name }}</span>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" id="logout" href="{{ route('logout') }}">Đăng xuất</a>
+            </li>
+        </ul>
+    </nav>
 
 <div class="container-fluid">
     <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="events/index.html">Quản lý sự kiện</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{route('event')}}">Quản lý sự kiện</a></li>
                 </ul>
 
                 <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <span>{tên sự kiện}</span>
+                    <span>{{ $events->name }}</span>
                 </h6>
                 <ul class="nav flex-column">
                     <li class="nav-item"><a class="nav-link active" href="events/detail.html">Tổng quan</a></li>
@@ -53,9 +53,9 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <div class="border-bottom mb-3 pt-3 pb-2">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-                    <h1 class="h2">{tên sự kiện}</h1>
+                    <h1 class="h2">{{ $events->name }}</h1>
                 </div>
-                <span class="h6">{ngày sự kiện}</span>
+                <span class="h6">{{date('d-m-Y', strtotime($events->date))}}</span>
             </div>
 
             <div class="mb-3 pt-3 pb-2">
@@ -64,23 +64,33 @@
                 </div>
             </div>
 
-            <form class="needs-validation" novalidate action="events/detail.html">
-
+            <form method="POST" class="needs-validation" novalidate action="{{route('tickets.store', ['id' => $id])}}">
+                @csrf
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputName">Tên</label>
-                        <!-- adding the class is-invalid to the input, shows the invalid feedback below -->
+                        @if(!$errors->has('name'))
+                        <input type="text" class="form-control" id="inputName" name="name" placeholder="" value="">
+                        @else
                         <input type="text" class="form-control is-invalid" id="inputName" name="name" placeholder="" value="">
-                        <div class="invalid-feedback">
+                        <div class="invalid-feedback ">
                             Tên không được để trống.
                         </div>
+                        @endif
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputCost">Giá</label>
+                        @if(!$errors->has('cost'))
                         <input type="number" class="form-control" id="inputCost" name="cost" placeholder="" value="0">
+                        @else
+                        <input type="number" class="form-control is-invalid" id="inputCost" name="cost" placeholder="" value="0">
+                        <div class="invalid-feedback ">
+                            Giá không được để trống.
+                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -94,23 +104,44 @@
                         </select>
                     </div>
                 </div>
-
-                <div class="row">
+                
+                <div id="amount" class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputAmount">Số lượng vé tối đa được bán</label>
+                        @if(!$errors->has('amount'))
                         <input type="number" class="form-control" id="inputAmount" name="amount" placeholder="" value="0">
+                        @else
+                        <input type="number" class="form-control is-invalid" id="inputAmount" name="amount" placeholder="" value="0">
+
+                        <div class="invalid-feedback ">
+                            Vé không được để trống.
+                        </div>
+                        @endif
                     </div>
                 </div>
 
-                <div class="row">
+                <div id="date" class="row">
                     <div class="col-12 col-lg-4 mb-3">
                         <label for="inputValidTill">Vé có thể được bán đến</label>
-                        <input type="text"
+                        
+                        @if(!$errors->has('valid_until'))
+                        <input type="date"
                                class="form-control"
                                id="inputValidTill"
                                name="valid_until"
                                placeholder="yyyy-mm-dd HH:MM"
+                               value="">     
+                        @else
+                        <input type="date"
+                               class="form-control is-invalid"
+                               id="inputValidTill"
+                               name="valid_until"
+                               placeholder="yyyy-mm-dd HH:MM"
                                value="">
+                        <div class="invalid-feedback ">
+                            valid_until không được để trống.
+                        </div>
+                        @endif
                     </div>
                 </div>
 
@@ -122,6 +153,24 @@
         </main>
     </div>
 </div>
-
+<script>
+    let checkValid = document.querySelector('#selectSpecialValidity');
+    let amount = document.querySelector('#amount'); 
+    let date = document.querySelector('#date');
+    checkValid.addEventListener('change', ()=>{
+        if(checkValid.value == "date"){
+        amount.classList.add('d-none');
+        date.classList.remove('d-none');
+    }else if(checkValid.value == "amount"){
+        amount.classList.remove('d-none');
+        date.classList.add('d-none');
+    }else{
+        amount.classList.remove('d-none');
+        date.classList.remove('d-none');
+    }
+    });
+    
+    
+</script>
 </body>
 </html>

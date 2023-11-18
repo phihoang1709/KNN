@@ -68,42 +68,59 @@
                         
                     </div>
                 </div>
-                @foreach($capacity as $session)
-                    <p>{{$session->capacity}}</p>
-                @endforeach
+
                 <!-- TODO create chart here -->
                 <script src="/chart/dist/Chart.min.js"></script>
                 <canvas id="myChart"></canvas>
-    <script>
-        var ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['a','a' ,'a' ,'a' ,'a'],
-        datasets: [{
-            label: 'Người tham dự',
-            data: [0,9,2,3],
-            backgroundColor: 'green',
-            borderWidth: 1
-        },
-        {
-            label: 'Công suất',
-            data: [
-                0,9,2,3
-            ],
-            backgroundColor: 'blue',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
-    </script>
+                <script>
+                    let nameRoom = [],
+                        capRoom = [],
+                        bgs = [],
+                        dataRoom1 = [];
+                    @foreach($rooms as $room)
+                    nameRoom.push("{{ $room->name }}")
+                    dataRoom1.push(Number("{{ $registrations->whereIn('session_id', $sessions->whereIn('room_id', $room->id)->pluck('id'))->count() }}"))
+                    capRoom.push(Number("{{ $room->capacity }}"))
+                    @endforeach
+            
+                    capRoom.forEach((item, index) => {
+                        if (dataRoom1[index] > item) bgs.push('red');
+                        else bgs.push('rgba(75, 192, 192, 0.2)')
+                    })
+            
+                    var ctx = document.getElementById('myChart');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: nameRoom,
+                            datasets: [{
+                                    label: 'Người tham dự',
+                                    data: dataRoom1,
+                                    // backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    backgroundColor: bgs,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Công suất',
+                                    data: capRoom,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                </script>
             </main>
         </div>
     </div>
