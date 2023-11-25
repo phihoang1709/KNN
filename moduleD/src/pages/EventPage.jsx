@@ -1,11 +1,25 @@
 import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import EventDetail from "../components/EventDetail";
 const EventPage = () => {
-    let { id } = useParams();
+    let { slug } = useParams();
+    let [event, setEvent] = useState();
+    useEffect(
+        function(){
+         async function getData(){
+                let res = await fetch(`http://127.0.0.1:8000/api/v1/organizers/demo1/events/${slug}`);
+                let data = await res.json();
+                setEvent(data);
+                
+            }
+            getData();
+        },[]);
+        console.log(event);
     return (
         <div className="container-fluid d-flex flex-column p-3">
             <div className="d-flex mt-3 border-bottom border-2 mb-3 pb-3">
-                <h1 className="me-auto">Hội thảo kỹ năng nghề TP Hà Nội 2023</h1>
-                <Link to={`/tickets/${id}`} className="btn btn-warning">Đăng ký sự kiện này</Link>
+                <h1 className="me-auto">{event.name}</h1>
+                <Link to={`/tickets/${event.id}`} className="btn btn-warning">Đăng ký sự kiện này</Link>
             </div>
             <table className="table table-striped mt-5">
                 <thead>
@@ -21,33 +35,7 @@ const EventPage = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="row" style={{height:'85px'}} >
-                        <td className="col" style={{ width: "10%" }}>
-                            Lo trinh dinh huong xa hoi
-                        </td>
-                        <td className="col" style={{ width: "10%" }}>
-                            Dia diem
-                        </td>
-                        <tr style={{ width: "80%" }} className="">
-                            <tr>
-                                <td className="border border-2 position-absolute border-success">
-                                    Event 1
-                                </td>
-                                <td style={{marginLeft : '20%'}} className="border border-2 position-absolute border-success">
-                                    Event 112
-                                </td>
-                            </tr>
-                            <tr className="position-absolute flex-wrap" style={{width: "100%",marginTop : '40px'}}>
-                                <td className="border border-2 position-absolute border-success">
-                                    Event333
-                                </td>
-                                <td style={{marginLeft : '20%'}} className="border border-2 position-absolute border-success">
-                                    Event112
-                                </td>
-                            </tr>
-                        </tr>
-                    </tr>
-                    
+                    <EventDetail name="Name 1" address="Address"/>
                 </tbody>
             </table>
         </div>

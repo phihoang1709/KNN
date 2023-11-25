@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::get("/v1/events", [EventsAPIController::class, "index"]);
 Route::get("/v1/events/{id}", [EventsAPIController::class, "show"]);
 // Route::put("/v1/events/{id}", [EventsAPIController::class, "update"]);
@@ -32,3 +33,5 @@ Route::post("/v1/login", [UserLoginController::class, "login"]);
 Route::get("/v1/logout", [UserLoginController::class, "logout"]);
 
 Route::post("/v1/organizers/{slug1}/events/{slug2}/registration", [EventDetailAPIController::class, "registration"]);
+
+Route::get("/v1/registration?token={token}", [RegistrationAPIController::class,'registration']);
