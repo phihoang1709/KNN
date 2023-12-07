@@ -14,18 +14,21 @@ class UserLoginController extends Controller
             "registration_code" => "required"
         ]);
         $check = Attendees::all()->where("lastname", $request->lastname)
-                          ->where("registration_code", $request->registration_code); 
-        if($check->first()){
-            $res = [
-                "firstname" => $check->first()->firstname,
-                "lastname" => $check->first()->lastname,
-                "username" => $check->first()->username,
-                "email" => $check->first()->email,
-                "token" => md5($check->first()->username)
-            ];
-            return response()->json($res, 200);
+                          ->where("registration_code", $request->registration_code)->first(); 
+        if(!$check){
+            return response()->json(["message" => "Error"], 401);
         }
-        return response()->json(["message" => "Error"], 401);
+        $res = [
+            "id" => $check->id,
+            "firstname" => $check->firstname,
+            "lastname" => $check->lastname,
+            "username" => $check->username,
+            "email" => $check->email,
+            "token" => md5($check->username)
+        ];
+        $check->login_token = $res['token'];
+        $check->save();
+        return response()->json($res, 200);
     }
 
     public function logout(){

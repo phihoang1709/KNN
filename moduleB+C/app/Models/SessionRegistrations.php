@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SessionRegistrations extends Model
 {
+    public $timestamps = false;
     use HasFactory;
 }
